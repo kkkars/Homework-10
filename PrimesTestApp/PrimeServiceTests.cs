@@ -6,6 +6,9 @@ namespace PrimesTestApp
 {
     static class PrimeServiceTests
     {
+        const string isPrimeRequestUri = "primes/5";
+        const string isNotPrimeRequestUri = "primes/0";
+
         public static async Task StartPointTest(HttpClient client)
         {
             Console.WriteLine("Test: StartPointTest\n");
@@ -23,8 +26,11 @@ namespace PrimesTestApp
         {
             Console.WriteLine("Test: IsPrimeTest\n");
 
-            await IsPrimeNumberCase(client);
-            await IsNotPrimeNumberCase(client);
+            Console.WriteLine("[IsPrimeNumberCase]:\n");
+            await PrimeNumberCase(client, isPrimeRequestUri, 200);
+
+            Console.WriteLine("[IsNotPrimeNumberCase]:\n");
+            await PrimeNumberCase(client, isNotPrimeRequestUri, 404);
         }
 
         public static async Task GetPrimesInRange(HttpClient client)
@@ -36,23 +42,11 @@ namespace PrimesTestApp
             await WrongRangeCase(client);
         }
 
-        private static async Task IsPrimeNumberCase(HttpClient client)
+        private static async Task PrimeNumberCase(HttpClient client, string requestUrl, int expectedCode)
         {
-            Console.WriteLine("[IsPrimeNumberCase]:\n");
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{client.BaseAddress}{requestUrl}"));
 
-            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{client.BaseAddress}primes/5"));
-
-            Console.WriteLine($"  Request: {{/primes/5}}\n  Expected-> Status code: {{200}}\n  Actual-> Status code: {{{(int)response.StatusCode}}}\n  Success: {(int)response.StatusCode == 200}");
-            Console.WriteLine();
-        }
-
-        private static async Task IsNotPrimeNumberCase(HttpClient client)
-        {
-            Console.WriteLine("[IsNotPrimeNumberCase]:\n");
-
-            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{client.BaseAddress}primes/0"));
-
-            Console.WriteLine($"  Request: {{/primes/0}}\n  Expected-> Status code: {{404}}\n  Actual-> Status code: {{{(int)response.StatusCode}}}\n  Success: {(int)response.StatusCode == 404}");
+            Console.WriteLine($"  Request: {{/{requestUrl}}}\n  Expected-> Status code: {{{expectedCode}}}\n  Actual-> Status code: {{{(int)response.StatusCode}}}\n  Success: {(int)response.StatusCode == expectedCode}");
             Console.WriteLine();
         }
 
