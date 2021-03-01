@@ -6,9 +6,6 @@ namespace PrimesTestApp
 {
     static class PrimeServiceTests
     {
-        const string isPrimeRequestUri = "primes/5";
-        const string isNotPrimeRequestUri = "primes/0";
-
         public static async Task StartPointTest(HttpClient client)
         {
             Console.WriteLine("Test: StartPointTest\n");
@@ -27,10 +24,10 @@ namespace PrimesTestApp
             Console.WriteLine("Test: IsPrimeTest\n");
 
             Console.WriteLine("[IsPrimeNumberCase]:\n");
-            await PrimeNumberCase(client, isPrimeRequestUri, 200);
+            await PrimeNumberCase(client, "primes/5", 200);
 
             Console.WriteLine("[IsNotPrimeNumberCase]:\n");
-            await PrimeNumberCase(client, isNotPrimeRequestUri, 404);
+            await PrimeNumberCase(client, "primes/0", 404);
         }
 
         public static async Task GetPrimesInRange(HttpClient client)
